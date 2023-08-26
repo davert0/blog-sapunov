@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+      target: prod
+    image: backend:${BACKEND_VERSION:-latest}
+    restart: always
+    env_file:
+    - .env
+    labels:
+      # Enables traefik for this container.
+    - traefik.enable=true
+    - traefik.http.routers.backend.rule=Host(`${BACKEND_TRAEFIK_HOST:-backend.localhost}`)
+    - traefik.http.routers.backend.entrypoints=http
+    - traefik.http.routers.backend.service=backend
+    - traefik.http.services.backend.loadbalancer.server.port=${BACKEND_PORT:-8000}
+    networks:
+    - default
+    - traefik-shared
+    environment:
+      BACKEND_HOST: 0.0.0.0
+      BACKEND_DB_FILE: /db_data/db.sqlite3
+    volumes:
+    - backend-db-data:/db_data/
+
+  migrator:
+    image: backend:${BACKEND_VERSION:-latest}
+    restart: "no"
+    command: alembic upgrade head
+    environment:
+      BACKEND_DB_FILE: /db_data/db.sqlite3
+    volumes:
+    - backend-db-data:/db_data/
+
+
+
+volumes:
+  backend-db-data:
+    name: backend-db-data
+
+networks:
+  # Network for traefik.
+  traefik-shared:
+    name: traefik-shared
