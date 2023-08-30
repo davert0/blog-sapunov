@@ -1,4 +1,5 @@
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.ext.asyncio import AsyncAttrs
 
 from backend.db.meta import meta
 
