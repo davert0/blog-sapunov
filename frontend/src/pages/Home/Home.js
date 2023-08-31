@@ -1,7 +1,9 @@
 import React from 'react';
 import styles from './Home.module.css';
+import { useSelector } from 'react-redux';
 
-function Article({ title, content }) {
+
+export const Article = ({ title, content }) => {
   return (
     <article className={styles.article}>
       <h2>{title}</h2>
@@ -10,12 +12,8 @@ function Article({ title, content }) {
   );
 }
 
-function Home() {
-  const articles = [
-    { title: "Заголовок статьи 1", content: "Текст статьи 1..." },
-    { title: "Заголовок статьи 2", content: "Текст статьи 2..." },
-    { title: "Заголовок статьи 3", content: "Текст статьи 3..." }
-  ];
+export const Home = () => {
+  const articles = useSelector(state => state.article.articles);
 
   return (
     <section className={styles.section}>
@@ -26,4 +24,3 @@ function Home() {
   );
 }
 
-export default Home;
