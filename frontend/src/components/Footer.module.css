@@ -1,0 +1,29 @@
+/* Footer.module.css */
+.footer {
+    background-color: #f2f2f2;
+    padding: 20px;
+    text-align: center;
+    color: #555555;
+    font-size: 14px;
+    margin-block-start: 50px; /* Добавленный стиль */
+  }
+  
+  .footer-container {
+    max-inline-size: 1200px; /* Добавленный стиль */
+    margin: 0 auto; /* Добавленный стиль */
+  }
+  
+  .footer-content {
+    display: flex; /* Добавленный стиль */
+    justify-content: center; /* Добавленный стиль */
+    align-items: center; /* Добавленный стиль */
+  }
+  
+  .footer a {
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer a:hover {
+    color: #666;
+  }

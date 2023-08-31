@@ -1,0 +1,24 @@
+/* Home.module.css */
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .article {
+    background-color: #f2f2f2;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .article h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .article p {
+    font-size: 14px;
+    color: #555555;
+  }

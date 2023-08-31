@@ -1,0 +1,49 @@
+.container {
+    max-inline-size: 800px;
+    margin: 34 auto;
+    padding: 20px;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-block-end: 10px;
+  }
+  
+  .description {
+    font-size: 16px;
+    color: #666;
+  }
+
+  .admin-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+    margin: 0 auto;
+  }
+  
+  .admin-input {
+    padding: 10px;
+    margin: 5px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .admin-button {
+    padding: 10px;
+    margin: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: blue;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .admin-heading {
+    color: blue;
+    text-align: center;
+    font-size: 24px;
+    margin-top: 20px;
+  }
