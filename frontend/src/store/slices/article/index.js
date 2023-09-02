@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-
+import * as thunks from "./thunks"
 
 const initialState = {
 	articles: [],
@@ -19,4 +19,4 @@ export const articleSlice = createSlice({
 
 export const actions = articleSlice.actions;
 export const articleReducer = articleSlice.reducer;
-// export { thunks };
+export { thunks };
