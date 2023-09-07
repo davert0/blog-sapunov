@@ -1,6 +1,8 @@
-from typing import List
+from typing import Annotated, List
+from backend.db.models.user import User
+from backend.services.user_services import get_current_active_user
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 from fastapi.param_functions import Depends
 
 from backend.db.dao.article_dao import ArticleDAO
@@ -30,12 +32,13 @@ async def get_article_models(
 @router.put("/")
 async def create_article_model(
     new_article_object: ArticlelInputDTO,
-    article_dao: ArticleDAO = Depends(),
+    article_dao: Annotated[ArticleDAO, Depends()],
+    current_user: Annotated[User, Depends(get_current_active_user)]
 ) -> None:
-    """
-    Creates dummy model in the database.
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Insufficient privilege",
+        )
 
-    :param new_dummy_object: new dummy model item.
-    :param dummy_dao: DAO for dummy models.
-    """
     await article_dao.create_article_model(**new_article_object.dict())

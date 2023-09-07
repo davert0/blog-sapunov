@@ -1,8 +1,12 @@
+from datetime import timedelta
 from typing import Any, AsyncGenerator
+from backend.db.dao.user_dao import UserDAO
+from backend.services.user_services import create_access_token, get_password_hash
 
 import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
+from sqlalchemy import true
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -108,3 +112,30 @@ async def client(
     """
     async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
         yield ac
+
+
+@pytest.fixture
+async def authed_client(dbsession: AsyncSession, client: AsyncClient):
+    dao = UserDAO(dbsession)
+    username =  "admin@email.com"
+    password = get_password_hash("123qwe123")
+    user = await dao.create_user_model("admin", username, password)
+    access_token_expires = timedelta(minutes=30)
+    access_token = create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    client.headers = {"Authorization": f"Bearer {access_token}"}
+    yield client
+
+@pytest.fixture
+async def admin_client(dbsession: AsyncSession, client: AsyncClient):
+    dao = UserDAO(dbsession)
+    username =  "admin@email.com"
+    password = get_password_hash("123qwe123")
+    user = await dao.create_user_model("admin", username, password, True)
+    access_token_expires = timedelta(minutes=30)
+    access_token = create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    client.headers = {"Authorization": f"Bearer {access_token}"}
+    yield client

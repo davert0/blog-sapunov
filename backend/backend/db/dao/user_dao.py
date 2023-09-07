@@ -12,7 +12,7 @@ class UserDAO:
 
     async def create_user_model(
         self, username: str, email: str, password: str, is_admin: bool = False
-    ) -> None:
+    ) -> User:
 
         user = User(
             username=username,
@@ -23,7 +23,10 @@ class UserDAO:
         )
         self.session.add(user)
 
-    async def get_user(self, email: str) -> User:
+        return user
+    
+
+    async def get_user(self, email: str) -> User | None:
         query = select(User).where(User.email == email)
         raw_user = await self.session.execute(query)
         return raw_user.scalar_one_or_none()

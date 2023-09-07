@@ -9,13 +9,6 @@ from starlette import status
 from backend.db.dao.user_dao import UserDAO
 
 
-@pytest.fixture
-def authenticated_user(dbsession: AsyncSession):
-    dao = UserDAO(dbsession)
-    user = UserDAO.create_user_model("admin", "admin@email.com", "123qwe123", True)
-    return user
-
-
 @pytest.mark.anyio
 async def test_creation(
     fastapi_app: FastAPI,

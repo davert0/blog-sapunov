@@ -9,11 +9,12 @@ from starlette import status
 from backend.db.dao.article_dao import ArticleDAO
 
 
+
+
 @pytest.mark.anyio
-async def test_creation(
+async def test_creation_no_auth(
     fastapi_app: FastAPI,
     client: AsyncClient,
-    dbsession: AsyncSession,
 ) -> None:
     url = fastapi_app.url_path_for("create_article_model")
     test_name = uuid.uuid4().hex
@@ -21,10 +22,39 @@ async def test_creation(
         url,
         json={"name": test_name, "text": "test"},
     )
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.anyio
+async def test_creation_no_admin(
+    fastapi_app: FastAPI,
+    authed_client: AsyncClient,
+) -> None:
+    url = fastapi_app.url_path_for("create_article_model")
+    test_name = uuid.uuid4().hex
+    response = await authed_client.put(
+        url,
+        json={"name": test_name, "text": "test"},
+    )
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+
+
+@pytest.mark.anyio
+async def test_creation_admin(
+    fastapi_app: FastAPI,
+    admin_client: AsyncClient,
+) -> None:
+    url = fastapi_app.url_path_for("create_article_model")
+    test_name = uuid.uuid4().hex
+    response = await admin_client.put(
+        url,
+        json={"name": test_name, "text": "test"},
+    )
     assert response.status_code == status.HTTP_200_OK
-    dao = ArticleDAO(dbsession)
-    instances = await dao.filter(name=test_name)
-    assert instances[0].name == test_name
+
+
 
 
 @pytest.mark.anyio

@@ -1,5 +1,5 @@
 import os
-from backend.web.api.user.schema import TokenData
+from pydantic import BaseModel
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from typing import Annotated
@@ -14,6 +14,9 @@ ALGORITHM = "HS256"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+class TokenData(BaseModel):
+    username: str | None = None
 
 
 async def get_current_user(
