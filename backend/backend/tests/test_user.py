@@ -10,7 +10,7 @@ from backend.db.dao.user_dao import UserDAO
 
 
 @pytest.fixture
-def admin_user(dbsession: AsyncSession):
+def authenticated_user(dbsession: AsyncSession):
     dao = UserDAO(dbsession)
     user = UserDAO.create_user_model("admin", "admin@email.com", "123qwe123", True)
     return user
@@ -24,30 +24,18 @@ async def test_creation(
 ) -> None:
     dao = UserDAO(dbsession)
     user = await dao.create_user_model("admin", "admin@email.com", get_password_hash("123qwe123"), True)
-    url = fastapi_app.url_path_for("login_for_access_token")
+    token_url = fastapi_app.url_path_for("login_for_access_token")
     form_data = {
         "username": "admin@email.com",
         "password": "123qwe123"
     }
-    response = await client.post(url, data=form_data)
+    response = await client.post(token_url, data=form_data)
     assert response.status_code == status.HTTP_200_OK
     assert "access_token" in response.json()
     assert response.json()["token_type"] == "bearer"
+    token = response.json()["access_token"]
 
-# @pytest.mark.anyio
-# async def test_getting(
-#     fastapi_app: FastAPI,
-#     client: AsyncClient,
-#     dbsession: AsyncSession,
-# ) -> None:
-#     """Tests dummy instance retrieval."""
-#     dao = ArticleDAO(dbsession)
-#     test_name = uuid.uuid4().hex
-#     await dao.create_article_model(name=test_name, text="test")
-#     url = fastapi_app.url_path_for("get_article_models")
-#     response = await client.get(url)
-#     articles = response.json()
+    me_url = fastapi_app.url_path_for("read_users_me")
 
-#     assert response.status_code == status.HTTP_200_OK
-#     assert len(articles) == 1
-#     assert articles[0]["name"] == test_name
+    response = await client.get(me_url, headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == status.HTTP_200_OK

@@ -33,7 +33,7 @@ async def get_current_user(
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = user_dao.get_user(email=token_data.username)
+    user = await user_dao.get_user(email=token_data.username)
     if user is None:
         raise credentials_exception
     return user
