@@ -10,7 +10,6 @@ from backend.db.models.article import Article
 
 
 class ArticleDAO:
-
     def __init__(self, session: AsyncSession = Depends(get_db_session)):
         self.session = session
 
@@ -21,7 +20,10 @@ class ArticleDAO:
     async def get_all_articles(self, limit: int, offset: int) -> List[Article]:
 
         raw_articles = await self.session.execute(
-            select(Article).options(selectinload(Article.tags)).limit(limit).offset(offset),
+            select(Article)
+            .options(selectinload(Article.tags))
+            .limit(limit)
+            .offset(offset),
         )
 
         return list(raw_articles.scalars().fetchall())

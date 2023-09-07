@@ -19,10 +19,7 @@ async def test_creation(
     test_name = uuid.uuid4().hex
     response = await client.put(
         url,
-        json={
-            "name": test_name,
-            "text": "test"
-        },
+        json={"name": test_name, "text": "test"},
     )
     assert response.status_code == status.HTTP_200_OK
     dao = ArticleDAO(dbsession)

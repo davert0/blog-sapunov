@@ -27,6 +27,7 @@ def get_app() -> FastAPI:
         openapi_url="/api/openapi.json",
         default_response_class=UJSONResponse,
     )
+    app.openapi_version = '3.0.0'
 
     # Adds startup and shutdown events.
     register_startup_event(app)

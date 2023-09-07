@@ -21,8 +21,6 @@ class ArticlelDTO(BaseModel):
         orm_mode = True
 
 
-
 class ArticlelInputDTO(BaseModel):
     name: str
     text: str
-

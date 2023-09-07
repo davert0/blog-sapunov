@@ -9,13 +9,13 @@ from sqlalchemy.sql.sqltypes import String
 from backend.db.base import Base
 
 
-
 article_tag_association = Table(
-    'article_tag_association',
+    "article_tag_association",
     Base.metadata,
-    Column('article_id', ForeignKey('article.id'), primary_key=True),
-    Column('tag_id', ForeignKey('tag.id'), primary_key=True)
+    Column("article_id", ForeignKey("article.id"), primary_key=True),
+    Column("tag_id", ForeignKey("tag.id"), primary_key=True),
 )
+
 
 class Article(Base):
 
@@ -24,14 +24,15 @@ class Article(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(length=200))
     text: Mapped[str]
-    tags: Mapped[List[Tag]] = relationship('Tag', secondary=article_tag_association, back_populates='articles')
+    tags: Mapped[List[Tag]] = relationship(
+        "Tag", secondary=article_tag_association, back_populates="articles"
+    )
     created_date: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
 
     def __repr__(self) -> str:
-         return f"Aricle(id={self.id!r}, name={self.name!r})"
-    
+        return f"Aricle(id={self.id!r}, name={self.name!r})"
 
 
 class Tag(Base):
@@ -44,8 +45,5 @@ class Tag(Base):
         secondary=article_tag_association, back_populates="tags"
     )
 
-
     def __repr__(self) -> str:
-         return f"Tag(id={self.id!r}, name={self.name!r})"
-    
-
+        return f"Tag(id={self.id!r}, name={self.name!r})"
