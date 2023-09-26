@@ -9,6 +9,8 @@
   .article {
     background-color: #f2f2f2;
     padding: 20px;
+    margin-left: 2rem;
+    margin-right: 2rem;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
