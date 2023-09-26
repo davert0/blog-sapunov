@@ -1,6 +1,7 @@
-import React from 'react';
+import {useEffect} from 'react';
 import styles from './Home.module.css';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import {thunks as articleThunks} from 'store/slices/article'
 
 
 export const Article = ({ title, content }) => {
@@ -13,12 +14,18 @@ export const Article = ({ title, content }) => {
 }
 
 export const Home = () => {
+  // @ts-ignore
   const articles = useSelector(state => state.article.articles);
-
+  const dispatch = useDispatch()
+  useEffect(() => {
+    // @ts-ignore
+    dispatch(articleThunks.getArticles());
+		// eslint-disable-next-line
+  }, []);
   return (
     <section className={styles.section}>
       {articles.map((article, index) => (
-        <Article key={index} title={article.title} content={article.content} />
+        <Article key={index} title={article.name} content={article.text} />
       ))}
     </section>
   );

@@ -3,6 +3,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.responses import UJSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from backend.web.api.router import api_router
@@ -10,6 +11,11 @@ from backend.web.lifetime import register_shutdown_event, register_startup_event
 
 APP_ROOT = Path(__file__).parent.parent
 
+
+ORIGINS = [
+    "http://localhost",
+    "http://localhost:3001",
+]
 
 def get_app() -> FastAPI:
     """
@@ -43,4 +49,11 @@ def get_app() -> FastAPI:
         name="static",
     )
 
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
     return app
