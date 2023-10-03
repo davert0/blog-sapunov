@@ -1,21 +1,45 @@
+import { useDispatch, useSelector } from 'react-redux';
 import './Admin.css';
+// @ts-ignore
 import React, { useState, useEffect } from 'react';
+import { actions, thunks } from 'store/slices/session';
+
 
 const Admin = () => {
     const [authenticated, setAuthenticated] = useState(false);
+    // @ts-ignore
+    // @ts-ignore
+    const { user } = useSelector(state => state.session);
+    const dispatch = useDispatch();
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
+      // @ts-ignore
+      dispatch(thunks.getUser());
+      // eslint-disable-next-line
+    }, []);
+  
+    const handleLogout = () => {
+      localStorage.removeItem('access_token')
+      dispatch(actions.setUser(null));
+      setAuthenticated(false);
+  }  
+    useEffect(() => {
+        if (user) {
           setAuthenticated(true);
         }
-      }, []);
+      }, [user]);
     const handleLoginFormSubmit = (event) => {
         event.preventDefault();
         const username = event.target.username.value;
         const password = event.target.password.value;
-        if (username === 'admin' && password === 'password') {
+        const formData = new FormData()
+        formData.append('username', username)
+        formData.append('password', password)
+        // @ts-ignore
+        dispatch(thunks.getToken(formData))
+        // @ts-ignore
+        if (user) {
           setAuthenticated(true);
-          localStorage.setItem('token', 'yourTokenValue');
+          // @ts-ignore
         }
       };
 
@@ -36,6 +60,7 @@ const Admin = () => {
       <div className="container">
         <h1 className="title">Admin</h1>
         <p className="description">Welcome to admin page.</p>
+        <button onClick={handleLogout}>Logout</button>
       </div>
     );
   };
