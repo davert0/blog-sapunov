@@ -24,3 +24,6 @@ class ArticlelDTO(BaseModel):
 class ArticlelInputDTO(BaseModel):
     name: str
     text: str
+
+class ArticlelInputDeleteDTO(BaseModel):
+    name: str

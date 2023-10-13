@@ -7,7 +7,7 @@ from fastapi.param_functions import Depends
 
 from backend.db.dao.article_dao import ArticleDAO
 from backend.db.models.article import Article
-from backend.web.api.article.schema import ArticlelDTO, ArticlelInputDTO
+from backend.web.api.article.schema import ArticlelDTO, ArticlelInputDTO, ArticlelInputDeleteDTO
 
 router = APIRouter()
 
@@ -29,9 +29,24 @@ async def get_article_models(
     return await article_dao.get_all_articles(limit=limit, offset=offset)
 
 
-@router.put("/")
+@router.post("/", response_model=ArticlelDTO)
 async def create_article_model(
     new_article_object: ArticlelInputDTO,
+    article_dao: Annotated[ArticleDAO, Depends()],
+    current_user: Annotated[User, Depends(get_current_active_user)]
+) -> Article:
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Insufficient privilege",
+        )
+    article = await article_dao.create_article_model(**new_article_object.dict())
+    return article
+
+
+@router.delete("/")
+async def delete_article_model(
+    article_object: ArticlelInputDeleteDTO,
     article_dao: Annotated[ArticleDAO, Depends()],
     current_user: Annotated[User, Depends(get_current_active_user)]
 ) -> None:
@@ -41,4 +56,4 @@ async def create_article_model(
             detail="Insufficient privilege",
         )
 
-    await article_dao.create_article_model(**new_article_object.dict())
+    await article_dao.delete_article_model(**article_object.dict())

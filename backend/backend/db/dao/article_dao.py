@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,10 +13,17 @@ class ArticleDAO:
     def __init__(self, session: AsyncSession = Depends(get_db_session)):
         self.session = session
 
-    async def create_article_model(self, name: str, text: str) -> None:
+    async def create_article_model(self, name: str, text: str) -> Article:
+        article = Article(name=name, text=text)
+        self.session.add(article)
+        return article
+    
 
-        self.session.add(Article(name=name, text=text))
-
+    async def delete_article_model(self, name: str) -> None:
+        await self.session.execute(
+            delete(Article).where(Article.name==name)
+        )
+    
     async def get_all_articles(self, limit: int, offset: int) -> List[Article]:
 
         raw_articles = await self.session.execute(
